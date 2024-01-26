@@ -25,6 +25,7 @@
     "@ngneat/overview": "^3.0.0",
     "@ngneat/until-destroy": "^9.0.0",
     "firebase": "^9.4.0",
+    "gh-pages": "^6.1.1",
     "rxfire": "^6.0.0",
     "rxjs": "~7.4.0",
     "tslib": "^2.3.0",
