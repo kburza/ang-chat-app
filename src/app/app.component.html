@@ -1,9 +1,7 @@
 <mat-toolbar color="primary">
   Welcome to Chatsper 👻
 
-  <ng-container
-    *ngIf="authService.currentUser$ | async as user; else loginButton"
-  >
+  <ng-container *ngIf="user$ | async as user; else loginButton">
     <button mat-button [matMenuTriggerFor]="userMenu">
       <mat-icon>account_circle</mat-icon>
       {{ user.displayName }}

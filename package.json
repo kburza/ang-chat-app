@@ -23,7 +23,7 @@
     "@angular/router": "^14.1.1",
     "@ngneat/hot-toast": "^4.0.0",
     "@ngneat/overview": "^3.0.0",
-    "@ngneat/until-destroy": "^9.0.0",
+    "@ngneat/until-destroy": "^9.2.3",
     "firebase": "^9.4.0",
     "gh-pages": "^6.1.1",
     "rxfire": "^6.0.0",

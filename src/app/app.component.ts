@@ -9,7 +9,13 @@ import { UsersService } from './services/users.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  constructor(public authService: AuthService, private router: Router) {}
+  user$ = this.usersService.currentUserProfile$;
+
+  constructor(
+    public authService: AuthService,
+    private router: Router,
+    private usersService: UsersService
+  ) {}
 
   logout() {
     this.authService.logout().subscribe(() => {

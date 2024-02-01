@@ -13,6 +13,19 @@ import { from, Observable, of } from 'rxjs';
   providedIn: 'root',
 })
 export class AuthService {
+  addUser(profileData: any) {
+    throw new Error('Method not implemented.');
+  }
+  updateUser(arg0: {
+    displayName?: string | null | undefined;
+    firstName?: string | null | undefined;
+    lastName?: string | null | undefined;
+    phone?: string | null | undefined;
+    address?: string | null | undefined;
+    uid: string;
+  }) {
+    throw new Error('Method not implemented.');
+  }
   currentUser$ = authState(this.auth);
 
   constructor(private auth: Auth) {}
