@@ -2,7 +2,7 @@
   class="form-container mat-elevation-z5 text-center"
   *ngIf="user$ | async as user"
 >
-  <h1>Update Profile</h1>
+  <h1 *ngIf="user$ | async as user">Update Profile: {{ user.displayName }}</h1>
   <div class="profile-image">
     <img
       width="120"
@@ -17,50 +17,39 @@
   <input #inputField hidden type="file" (change)="uploadFile($event, user)" />
 
   <form class="margin-top" [formGroup]="profileForm" (ngSubmit)="saveProfile()">
-    <div class="row">
-      <mat-form-field>
-        <input
-          type="text"
-          matInput
-          formControlName="firstName"
-          placeholder="First Name"
-        />
-      </mat-form-field>
-      <mat-form-field>
-        <input
-          type="text"
-          matInput
-          formControlName="lastName"
-          placeholder="Last Name"
-        />
-      </mat-form-field>
-    </div>
-
-    <div class="row">
-      <mat-form-field>
-        <input
-          type="text"
-          matInput
-          formControlName="displayName"
-          placeholder="Display Name"
-        />
-      </mat-form-field>
-      <mat-form-field>
-        <input
-          type="number"
-          matInput
-          formControlName="phone"
-          placeholder="Phone"
-        />
-      </mat-form-field>
-    </div>
     <mat-form-field>
       <input
         type="text"
         matInput
-        formControlName="address"
-        placeholder="Address"
+        formControlName="firstName"
+        placeholder="First Name"
       />
+    </mat-form-field>
+    <mat-form-field>
+      <input
+        type="text"
+        matInput
+        formControlName="lastName"
+        placeholder="Last Name"
+      />
+    </mat-form-field>
+
+    <mat-form-field>
+      <input
+        type="text"
+        matInput
+        formControlName="displayName"
+        placeholder="Display Name"
+      />
+    </mat-form-field>
+
+    <mat-form-field>
+      <textarea
+        matInput
+        formControlName="bio"
+        placeholder="Bio (Mood)"
+        rows="5"
+      ></textarea>
     </mat-form-field>
 
     <button type="submit" class="margin-top" mat-raised-button color="primary">
