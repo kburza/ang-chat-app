@@ -2,9 +2,20 @@
   class="form-container mat-elevation-z5 text-center"
   *ngIf="user$ | async as user"
 >
-  <h1 *ngIf="user$ | async as user">Update Profile: {{ user.displayName }}</h1>
+  <h1 *ngIf="user$ | async as user">
+    Update Profile:
+    <span [style.color]="user.color || 'black'">{{ user.displayName }}</span>
+  </h1>
+
   <div class="icon-container" [matMenuTriggerFor]="colorMenu">
-    <mat-icon class="larger-icon" [style.color]="user.color">face</mat-icon>
+    <mat-icon
+      class="larger-icon"
+      [style.color]="user.color"
+      (mouseenter)="onMouseEnter()"
+      (mouseleave)="onMouseLeave()"
+    >
+      face
+    </mat-icon>
   </div>
 
   <!-- <style>
@@ -62,16 +73,13 @@
       ></textarea>
     </mat-form-field>
 
-    <!-- <mat-form-field>
-      <mat-label>Color</mat-label>
-      <mat-button-toggle-group formControlName="color">
-        <mat-button-toggle *ngFor="let color of colorOptions" [value]="color">
-          <div class="color-circle" [style.background]="color"></div>
-        </mat-button-toggle>
-      </mat-button-toggle-group>
-    </mat-form-field> -->
-
-    <button type="submit" class="margin-top" mat-raised-button color="primary">
+    <button
+      type="submit"
+      class="margin-top"
+      mat-raised-button
+      [style.background]="user.color || 'primary'"
+      [style.color]="'white'"
+    >
       Save Changes
     </button>
   </form>

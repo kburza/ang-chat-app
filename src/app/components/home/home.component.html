@@ -1,1 +1,4 @@
-<h1 *ngIf="user$ | async as user">Welcome to Chatsper, {{ user.email }}!</h1>
+<h1 *ngIf="user$ | async as user">
+  Welcome!
+  <span [style.color]="user.color || 'black'">{{ user.displayName }}</span>
+</h1>

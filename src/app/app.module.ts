@@ -23,6 +23,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { ProfileComponent } from './components/profile/profile.component';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
     HotToastModule.forRoot(),
     MatMenuModule,
     MatButtonToggleModule,
+    MatTooltipModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -10,6 +10,7 @@ import { UsersService } from './services/users.service';
 })
 export class AppComponent {
   user$ = this.usersService.currentUserProfile$;
+  toolbarColor: string = 'primary'; // Set default color
 
   constructor(
     public authService: AuthService,
@@ -17,9 +18,16 @@ export class AppComponent {
     private usersService: UsersService
   ) {}
 
+  ngOnInit() {
+    this.user$.subscribe((user) => {
+      this.toolbarColor = user?.color || 'primary';
+    });
+  }
+
   logout() {
     this.authService.logout().subscribe(() => {
       this.router.navigate(['']);
+      window.location.reload();
     });
   }
 }

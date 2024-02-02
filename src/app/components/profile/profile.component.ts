@@ -93,4 +93,19 @@ export class ProfileComponent implements OnInit {
       )
       .subscribe();
   }
+
+  // Methods for hover effect on mat-icon
+  onMouseEnter() {
+    const matIcon = document.querySelector('.larger-icon');
+    if (matIcon) {
+      matIcon.classList.add('hovered');
+    }
+  }
+
+  onMouseLeave() {
+    const matIcon = document.querySelector('.larger-icon');
+    if (matIcon) {
+      matIcon.classList.remove('hovered');
+    }
+  }
 }

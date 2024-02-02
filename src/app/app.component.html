@@ -1,5 +1,5 @@
 <mat-toolbar [style.background]="(user$ | async)?.color || 'primary'">
-  Welcome to Chatsper 👻
+  <h1>Chatsper 👻</h1>
 
   <ng-container *ngIf="user$ | async as user; else loginButton">
     <button mat-button [matMenuTriggerFor]="userMenu">

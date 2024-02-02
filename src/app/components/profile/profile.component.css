@@ -33,6 +33,12 @@
   font-size: 165px;
   width: 100%;
   height: 100%;
+  transition: filter 0.3s;
+}
+
+.larger-icon:hover {
+  cursor: pointer;
+  filter: brightness(1.2); /* Increase the brightness on hover */
 }
 
 .profile-image > button {
