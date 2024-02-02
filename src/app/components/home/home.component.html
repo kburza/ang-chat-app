@@ -3,7 +3,7 @@
   <h1 *ngIf="user$ | async as user">
     <span [style.color]="user.color || 'black'">{{ user.displayName }}</span>
   </h1>
-  <a href="/login" class="icon-link">
+  <a routerLink="/login" class="icon-link">
     <div class="huge-icon">
       <svg
         xmlns="http://www.w3.org/2000/svg"
