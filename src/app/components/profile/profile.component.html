@@ -3,18 +3,27 @@
   *ngIf="user$ | async as user"
 >
   <h1 *ngIf="user$ | async as user">Update Profile: {{ user.displayName }}</h1>
-  <div class="profile-image">
-    <img
-      width="120"
-      height="120"
-      class="margin-top mat-elevation-z1"
-      [src]="user.photoURL ?? '/assets/images/image-placeholder.png'"
-    />
-    <button mat-mini-fab (click)="inputField.click()">
-      <mat-icon>edit</mat-icon>
-    </button>
+  <div class="icon-container" [matMenuTriggerFor]="colorMenu">
+    <mat-icon class="larger-icon" [style.color]="user.color">face</mat-icon>
   </div>
-  <input #inputField hidden type="file" (change)="uploadFile($event, user)" />
+
+  <!-- <style>
+    ::ng-deep .cdk-overlay-pane {
+      transform: translate(18%, -5%) !important;
+    }
+  </style> -->
+  <mat-menu
+    #colorMenu="matMenu"
+    [hasBackdrop]="true"
+    [overlapTrigger]="false"
+    class="profile-menu"
+  >
+    <ng-container *ngFor="let color of colorOptions">
+      <button mat-menu-item (click)="setColor(color)">
+        <div class="color-circle" [style.background]="color"></div>
+      </button>
+    </ng-container>
+  </mat-menu>
 
   <form class="margin-top" [formGroup]="profileForm" (ngSubmit)="saveProfile()">
     <mat-form-field>
@@ -45,15 +54,25 @@
 
     <mat-form-field>
       <textarea
+        type="text"
         matInput
         formControlName="bio"
-        placeholder="Bio (Mood)"
-        rows="5"
+        placeholder="Bio/Mood"
+        rows="1"
       ></textarea>
     </mat-form-field>
 
+    <!-- <mat-form-field>
+      <mat-label>Color</mat-label>
+      <mat-button-toggle-group formControlName="color">
+        <mat-button-toggle *ngFor="let color of colorOptions" [value]="color">
+          <div class="color-circle" [style.background]="color"></div>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+    </mat-form-field> -->
+
     <button type="submit" class="margin-top" mat-raised-button color="primary">
-      Save
+      Save Changes
     </button>
   </form>
 </div>

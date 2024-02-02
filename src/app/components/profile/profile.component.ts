@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, NonNullableFormBuilder } from '@angular/forms';
 import { HotToastService } from '@ngneat/hot-toast';
-import { map, switchMap, catchError } from 'rxjs/operators';
-import { User } from 'firebase/auth';
-import { ImageUploadService } from 'src/app/services/image-upload.service';
-import { AuthService } from 'src/app/services/auth.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { of } from 'rxjs';
+import { switchMap, tap } from 'rxjs';
+import { ProfileUser } from 'src/app/models/user';
+import { ImageUploadService } from 'src/app/services/image-upload.service';
+import { UsersService } from 'src/app/services/users.service';
 
 @UntilDestroy()
 @Component({
@@ -15,73 +14,83 @@ import { of } from 'rxjs';
   styleUrls: ['./profile.component.css'],
 })
 export class ProfileComponent implements OnInit {
-  user$ = this.authService.currentUser$;
+  user$ = this.usersService.currentUserProfile$;
 
-  profileForm = new FormGroup({
-    uid: new FormControl(''),
-    displayName: new FormControl(''),
-    firstName: new FormControl(''),
-    lastName: new FormControl(''),
-    phone: new FormControl(''),
-    address: new FormControl(''),
+  profileForm = this.fb.group({
+    uid: [''],
+    displayName: [''],
+    firstName: [''],
+    lastName: [''],
+    bio: [''],
+    color: [''],
   });
-  router: any;
+  colorOptions: string[] = [
+    'rgb(255, 154, 159)', // red
+    'rgb(82, 129, 206)', // blue
+    'rgb(186, 232, 172)', // green
+    'rgb(233, 215, 135)', // yellow
+    'rgb(153, 140, 235)', // purple
+    'rgb(236, 157, 126)', // orange
+    'rgb(216, 171, 158)', // brown
+    'rgb(255, 192, 203)', // pink
+    'rgb(128, 128, 128)', // gray
+  ];
 
   constructor(
     private imageUploadService: ImageUploadService,
     private toast: HotToastService,
-    private authService: AuthService
+    private usersService: UsersService,
+    private fb: NonNullableFormBuilder
   ) {}
 
   ngOnInit(): void {
-    this.authService.currentUser$
-      .pipe(untilDestroyed(this))
+    this.usersService.currentUserProfile$
+      .pipe(untilDestroyed(this), tap(console.log))
       .subscribe((user) => {
         this.profileForm.patchValue({ ...user });
       });
   }
 
-  uploadFile(event: any, user: User) {
+  uploadFile(event: any, { uid }: ProfileUser) {
     this.imageUploadService
-      .uploadImage(event.target.files[0], `images/profile/${user.uid}`)
+      .uploadImage(event.target.files[0], `images/profile/${uid}`)
       .pipe(
         this.toast.observe({
           loading: 'Uploading profile image...',
           success: 'Image uploaded successfully',
           error: 'There was an error in uploading the image',
         }),
-        map((photoURL) => {
-          this.authService.updateProfileData({ photoURL });
-        })
+        switchMap((photoURL) =>
+          this.usersService.updateUser({
+            uid,
+            // photoURL,
+          })
+        )
       )
       .subscribe();
   }
 
-  saveProfile() {
-    const profileData = this.profileForm.value as {
-      uid: string;
-      displayName?: string | null | undefined;
-      firstName?: string | null | undefined;
-      lastName?: string | null | undefined;
-      phone?: string | null | undefined;
-      address?: string | null | undefined;
-    };
+  setColor(color: string) {
+    this.profileForm.patchValue({ color }); // Set color in the profileForm
+    this.saveProfile(); // Trigger saveProfile function
+  }
 
-    if (!profileData) {
+  saveProfile() {
+    const { uid, ...data } = this.profileForm.value;
+
+    if (!uid) {
       return;
     }
 
-    of(this.authService.updateUser(profileData))
+    this.usersService
+      .updateUser({ uid, ...data })
       .pipe(
-        switchMap(async () => this.authService.addUser(profileData)),
         this.toast.observe({
-          loading: 'Updating profile data...',
+          loading: 'Saving profile data...',
           success: 'Profile updated successfully',
           error: 'There was an error in updating the profile',
         })
       )
-      .subscribe(() => {
-        this.router.navigate(['/home']);
-      });
+      .subscribe();
   }
 }
