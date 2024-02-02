@@ -10,3 +10,17 @@ mat-toolbar {
   border-radius: 100%;
   margin-right: 8px;
 }
+
+.toolbar-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toolbar-content h1 {
+  margin-right: 2px; /* Adjust the margin as needed */
+}
+
+.toolbar-content lucide-icon {
+  margin-top: 5px; /* Adjust the margin-top to bring the icon down */
+}

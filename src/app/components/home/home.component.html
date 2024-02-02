@@ -1,4 +1,40 @@
-<h1 *ngIf="user$ | async as user">
-  Welcome!
-  <span [style.color]="user.color || 'black'">{{ user.displayName }}</span>
-</h1>
+<div class="page-container">
+  <h1>Welcome!</h1>
+  <h1 *ngIf="user$ | async as user">
+    <span [style.color]="user.color || 'black'">{{ user.displayName }}</span>
+  </h1>
+  <a href="/login" class="icon-link">
+    <div class="huge-icon">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="200"
+        height="200"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="3"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="lucide lucide-ghost"
+      >
+        <path d="M9 10h.01" />
+        <path d="M15 10h.01" />
+        <path
+          d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"
+        />
+      </svg>
+    </div>
+  </a>
+  <h2>About</h2>
+  <p>
+    Chatsper redefines messaging apps by prioritizing security and reliability.
+    Developed to counter the prevailing surveillance practices of major
+    corporations, Chatsper stands out as a secure and trustworthy applet.
+    Focused on safeguarding user data and ensuring privacy, it offers an
+    alternative to conventional messaging platforms, emphasizing confidentiality
+    in communication. With a commitment to user empowerment, Chatsper provides a
+    concise and secure messaging experience, challenging the norms of
+    data-centric practices prevalent in the industry.
+  </p>
+  <a class="sign-up-link" routerLink="/sign-up">Sign up Today!</a>
+</div>

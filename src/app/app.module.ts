@@ -24,6 +24,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { Ghost, LucideAngularModule } from 'lucide-angular';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatMenuModule,
     MatButtonToggleModule,
     MatTooltipModule,
+    LucideAngularModule.pick({ Ghost }),
   ],
   providers: [],
   bootstrap: [AppComponent],

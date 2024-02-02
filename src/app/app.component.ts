@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from './services/auth.service';
 import { UsersService } from './services/users.service';
@@ -10,24 +10,19 @@ import { UsersService } from './services/users.service';
 })
 export class AppComponent {
   user$ = this.usersService.currentUserProfile$;
-  toolbarColor: string = 'primary'; // Set default color
 
   constructor(
     public authService: AuthService,
     private router: Router,
-    private usersService: UsersService
+    private usersService: UsersService,
+    private ngZone: NgZone
   ) {}
-
-  ngOnInit() {
-    this.user$.subscribe((user) => {
-      this.toolbarColor = user?.color || 'primary';
-    });
-  }
 
   logout() {
     this.authService.logout().subscribe(() => {
-      this.router.navigate(['']);
-      window.location.reload();
+      this.ngZone.run(() => {
+        this.router.navigate(['/home']); // Navigate to the home page after logout
+      });
     });
   }
 }

@@ -1,5 +1,11 @@
-<mat-toolbar [style.background]="(user$ | async)?.color || 'primary'">
-  <h1>Chatsper 👻</h1>
+<mat-toolbar
+  [style.background]="(user$ | async)?.color || 'rgb(128, 128, 128)'"
+  [style.color]="'white'"
+>
+  <span class="toolbar-content">
+    <h1>Chatsper</h1>
+    <lucide-icon name="ghost"></lucide-icon>
+  </span>
 
   <ng-container *ngIf="user$ | async as user; else loginButton">
     <button mat-button [matMenuTriggerFor]="userMenu">
