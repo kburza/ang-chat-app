@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import {
   collection,
+  collectionData,
   doc,
   docData,
   Firestore,
   getDoc,
+  query,
   setDoc,
   updateDoc,
 } from '@angular/fire/firestore';
@@ -29,6 +31,12 @@ export class UsersService {
         return docData(ref) as Observable<ProfileUser>;
       })
     );
+  }
+
+  get allUsers$(): Observable<ProfileUser[]> {
+    const ref = collection(this.firestore, 'users');
+    const queryAll = query(ref);
+    return collectionData(queryAll) as Observable<ProfileUser[]>;
   }
 
   addUser(user: ProfileUser): Observable<void> {

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Pipe } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
@@ -26,6 +26,21 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Ghost, LucideAngularModule } from 'lucide-angular';
 
+import { MatListModule } from '@angular/material/list';
+import {} from '@angular/material/form-field';
+import {} from '@angular/material/input';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { DateDisplayPipe } from 'src/app/components/pipes/date-display.pipe';
+import { TimeAgoPipe } from 'time-ago-pipe';
+import { DatePipe } from '@angular/common';
+import { MatDividerModule } from '@angular/material/divider';
+
+@Pipe({
+  name: 'timeAgo',
+  pure: false,
+})
+export class TimeAgoExtendsPipe extends TimeAgoPipe {}
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -34,6 +49,8 @@ import { Ghost, LucideAngularModule } from 'lucide-angular';
     LandingComponent,
     HomeComponent,
     ProfileComponent,
+    DateDisplayPipe,
+    TimeAgoExtendsPipe,
   ],
   imports: [
     BrowserModule,
@@ -54,8 +71,12 @@ import { Ghost, LucideAngularModule } from 'lucide-angular';
     MatButtonToggleModule,
     MatTooltipModule,
     LucideAngularModule.pick({ Ghost }),
+    MatAutocompleteModule,
+    MatListModule,
+    DatePipe,
+    MatDividerModule,
   ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

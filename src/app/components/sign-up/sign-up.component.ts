@@ -77,11 +77,18 @@ export class SignUpComponent implements OnInit {
 
     const email = `${name}@example.com`;
 
+    const defaultColor = 'rgb(128, 128, 128)';
+
     this.authService
       .signUp(email, password)
       .pipe(
         switchMap(({ user: { uid } }) =>
-          this.usersService.addUser({ uid, email, displayName: name })
+          this.usersService.addUser({
+            uid,
+            email,
+            displayName: name,
+            color: defaultColor, // Set the default color here
+          })
         ),
         this.toast.observe({
           success: 'Congrats! You are all signed up',
