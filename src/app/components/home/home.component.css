@@ -1,39 +1,111 @@
-body,
-html {
-  height: 100%;
-  margin: 0;
+.container {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  height: calc(100vh - 120px);
+
+  > .chat-list {
+    width: 40%;
+    margin: 16px;
+    background: #c5cae9;
+    border-radius: 16px;
+
+    .chat-title {
+      display: flex;
+      justify-content: space-between;
+
+      .chat-name {
+        font-weight: 500;
+      }
+
+      .chat-date {
+        font-size: 0.7rem;
+        color: rgba(0, 0, 0, 0.7);
+      }
+    }
+
+    .search-input {
+      margin: 24px;
+    }
+  }
+
+  > .messages {
+    width: 60%;
+    padding: 24px;
+    margin: 16px;
+    margin-left: 8px;
+    border-radius: 16px;
+    background: rgba(0, 0, 0, 0.05);
+
+    .messages-header {
+      display: flex;
+      margin-bottom: 8px;
+
+      > img {
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 16px;
+        height: 35px;
+      }
+
+      > h2 {
+        margin: 0;
+      }
+    }
+
+    .chat-area {
+      height: calc(100vh - 340px);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+
+      overflow: auto;
+
+      > :first-child {
+        margin-top: auto;
+      }
+
+      .chat-bubble-container {
+        display: flex;
+        width: 100%;
+        justify-content: flex-start;
+
+        > .chat-bubble {
+          background: white;
+          padding-top: 8px;
+          padding-bottom: 18px;
+          padding-left: 8px;
+          padding-right: 100px;
+          margin-bottom: 16px;
+          border-radius: 8px;
+          width: fit-content;
+
+          position: relative;
+
+          > .chat-time {
+            position: absolute;
+            bottom: 2px;
+            right: 8px;
+            font-size: 0.7rem;
+            color: rgba(0, 0, 0, 0.6);
+          }
+        }
+      }
+
+      .chat-bubble-container.sender {
+        justify-content: flex-end;
+
+        > .chat-bubble {
+          background: #d894a4;
+        }
+      }
+    }
+
+    .input-area {
+      padding-top: 16px;
+      padding-bottom: 8px;
+    }
+  }
 }
 
-.larger-icon:hover {
-  cursor: pointer;
-  filter: brightness(0.8); /* Increase the brightness on hover */
-}
-
-.larger-icon {
-  font-size: 200px;
+mat-form-field {
   width: 100%;
-  height: 100%;
-  text-align: center;
-  line-height: normal;
-}
-
-.huge-icon {
-  font-size: 200px;
-  width: 100%;
-  height: 100%;
-  color: black; /* Ensure it doesn't take the link color */
-  text-align: center;
-  transition: filter 0.3s ease; /* Add transition for smooth hover effect */
-}
-
-.huge-icon:hover {
-  cursor: pointer;
-  filter: brightness(1.8); /* Increase the brightness on hover */
-}
-
-.sign-up-link {
-  margin-top: 20px; /* Adjust the margin as needed */
 }

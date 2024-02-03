@@ -1,40 +1,105 @@
-<div class="page-container">
-  <h1>Welcome!</h1>
-  <h1 *ngIf="user$ | async as user">
-    <span [style.color]="user.color || 'black'">{{ user.displayName }}</span>
-  </h1>
-  <a routerLink="/login" class="icon-link">
-    <div class="huge-icon">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="200"
-        height="200"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="3"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        class="lucide lucide-ghost"
-      >
-        <path d="M9 10h.01" />
-        <path d="M15 10h.01" />
-        <path
-          d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"
+<div class="container">
+  <div class="chat-list mat-elevation-z5">
+    <div class="search-input">
+      <mat-form-field>
+        <input
+          matInput
+          placeholder="Search for users..."
+          [matAutocomplete]="users"
+          [formControl]="searchControl"
         />
-      </svg>
+      </mat-form-field>
+      <mat-autocomplete #users="matAutocomplete">
+        <mat-option
+          *ngFor="let user of users$ | async"
+          [value]="''"
+          (click)="createChat(user)"
+        >
+          {{ user.displayName }}
+        </mat-option>
+      </mat-autocomplete>
     </div>
-  </a>
-  <h2>About</h2>
-  <p>
-    Chatsper redefines messaging apps by prioritizing security and reliability.
-    Developed to counter the prevailing surveillance practices of major
-    corporations, Chatsper stands out as a secure and trustworthy applet.
-    Focused on safeguarding user data and ensuring privacy, it offers an
-    alternative to conventional messaging platforms, emphasizing confidentiality
-    in communication. With a commitment to user empowerment, Chatsper provides a
-    concise and secure messaging experience, challenging the norms of
-    data-centric practices prevalent in the industry.
-  </p>
-  <a class="sign-up-link" routerLink="/sign-up">Sign up Today!</a>
+    <mat-selection-list [multiple]="false" [formControl]="chatListControl">
+      <mat-divider></mat-divider>
+      <mat-list-option *ngFor="let chat of myChats$ | async" [value]="chat.id">
+        <mat-icon>face</mat-icon>
+        <p mat-line class="chat-title">
+          <span class="chat-name">{{ chat.chatName }}</span
+          ><span class="chat-date"
+            >{{
+            <!-- chat.lastMessageDate | dateDisplay -->
+            }}</span
+          >
+        </p>
+        <p mat-line>{{ chat.lastMessage }}</p>
+        <mat-divider></mat-divider>
+      </mat-list-option>
+    </mat-selection-list>
+  </div>
+  <div class="messages mat-elevation-z5">
+    <div
+      class="messages-header"
+      *ngIf="selectedChat$ | async as selectedChat; else noChatSelected"
+    >
+      <mat-icon style="padding-right: 3px; padding-top: 2px">face</mat-icon>
+      <h2>{{ selectedChat.chatName }}</h2>
+    </div>
+    <ng-template #noChatSelected>
+      <h2>Chats</h2>
+    </ng-template>
+    <mat-divider></mat-divider>
+    <div class="chat-area">
+      <ng-container *ngIf="user$ | async as currentUser">
+        <ng-container *ngIf="messages$ | async as messages">
+          <div
+            class="chat-bubble-container"
+            [ngClass]="{ sender: message.senderId === currentUser.uid }"
+            *ngFor="let message of messages"
+          >
+            <div
+              class="chat-bubble"
+              [ngStyle]="{
+                'background-color':
+                  message.senderId === (currentUser$ | async)?.uid
+                    ? (currentUser$ | async)?.color
+                    : 'white',
+                color:
+                  message.senderId === (currentUser$ | async)?.uid
+                    ? 'white'
+                    : 'black'
+              }"
+            >
+              {{ message.text }}
+              <span
+                class="chat-time"
+                [ngStyle]="{
+                  color:
+                    message.senderId === (currentUser$ | async)?.uid
+                      ? 'white'
+                      : 'black'
+                }"
+                >{{
+                <!-- message.sentDate | dateDisplay -->
+                }}</span
+              >
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+      <div #endOfChat></div>
+    </div>
+    <div class="input-area">
+      <mat-form-field appearance="outline">
+        <input
+          matInput
+          placeholder="Enter your message..."
+          [formControl]="messageControl"
+          (keydown.enter)="sendMessage()"
+        />
+        <button mat-icon-button matSuffix (click)="sendMessage()">
+          <mat-icon>send</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+  </div>
 </div>
