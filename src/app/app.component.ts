@@ -21,7 +21,8 @@ export class AppComponent {
   logout() {
     this.authService.logout().subscribe(() => {
       this.ngZone.run(() => {
-        this.router.navigate(['/home']); // Navigate to the home page after logout
+        this.router.navigate(['']);
+        return true;
       });
     });
   }

@@ -1,5 +1,8 @@
 <div class="container">
-  <div class="chat-list mat-elevation-z5">
+  <div
+    class="chat-list mat-elevation-z5"
+    [ngStyle]="{ 'background-color': (currentUser$ | async)?.color }"
+  >
     <div class="search-input">
       <mat-form-field>
         <input
@@ -7,6 +10,7 @@
           placeholder="Search for users..."
           [matAutocomplete]="users"
           [formControl]="searchControl"
+          style="color: white"
         />
       </mat-form-field>
       <mat-autocomplete #users="matAutocomplete">
@@ -19,19 +23,23 @@
         </mat-option>
       </mat-autocomplete>
     </div>
+
     <mat-selection-list [multiple]="false" [formControl]="chatListControl">
       <mat-divider></mat-divider>
+
       <mat-list-option *ngFor="let chat of myChats$ | async" [value]="chat.id">
-        <mat-icon>face</mat-icon>
-        <p mat-line class="chat-title">
-          <span class="chat-name">{{ chat.chatName }}</span
-          ><span class="chat-date"
-            >{{
-            <!-- chat.lastMessageDate | dateDisplay -->
-            }}</span
-          >
-        </p>
-        <p mat-line>{{ chat.lastMessage }}</p>
+        <div class="chat-title">
+          <lucide-icon
+            name="ghost"
+            size="17"
+            style="padding-top: 1px; margin-right: px"
+          ></lucide-icon>
+          <span class="chat-name">{{ chat.chatName }}</span>
+          <span class="chat-date" style="font-size: 0.5rem">{{
+            chat.lastMessageDate | dateDisplay
+          }}</span>
+        </div>
+        <p mat-line style="font-size: 0.7rem">{{ chat.lastMessage }}</p>
         <mat-divider></mat-divider>
       </mat-list-option>
     </mat-selection-list>
@@ -78,10 +86,9 @@
                       ? 'white'
                       : 'black'
                 }"
-                >{{
-                <!-- message.sentDate | dateDisplay -->
-                }}</span
               >
+                {{ message.sentDate | dateDisplay }}
+              </span>
             </div>
           </div>
         </ng-container>
