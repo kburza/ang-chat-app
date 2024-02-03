@@ -26,14 +26,14 @@ export class ProfileComponent implements OnInit {
   });
   colorOptions: string[] = [
     'rgb(255, 154, 159)', // red
-    'rgb(82, 129, 206)', // blue
-    'rgb(186, 232, 172)', // green
-    'rgb(233, 215, 135)', // yellow
-    'rgb(153, 140, 235)', // purple
-    'rgb(236, 157, 126)', // orange
-    'rgb(216, 171, 158)', // brown
     'rgb(255, 192, 203)', // pink
+    'rgb(236, 157, 126)', // orange
+    'rgb(233, 215, 135)', // yellow
+    'rgb(186, 232, 172)', // green
+    'rgb(82, 129, 206)', // blue
+    'rgb(153, 140, 235)', // purple
     'rgb(128, 128, 128)', // gray
+    'rgb(216, 171, 158)', // brown
   ];
 
   constructor(
