@@ -1,3 +1,4 @@
+// sign-up.component.ts
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -36,7 +37,7 @@ export class SignUpComponent implements OnInit {
   signUpForm = this.fb.group(
     {
       name: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      // Remove the email field
       password: ['', Validators.required],
       confirmPassword: ['', Validators.required],
     },
@@ -53,9 +54,7 @@ export class SignUpComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  get email() {
-    return this.signUpForm.get('email');
-  }
+  // Remove the email() getter
 
   get password() {
     return this.signUpForm.get('password');
@@ -70,11 +69,13 @@ export class SignUpComponent implements OnInit {
   }
 
   submit() {
-    const { name, email, password } = this.signUpForm.value;
+    const { name, password } = this.signUpForm.value;
 
-    if (!this.signUpForm.valid || !name || !password || !email) {
+    if (!this.signUpForm.valid || !name || !password) {
       return;
     }
+
+    const email = `${name}@example.com`;
 
     this.authService
       .signUp(email, password)

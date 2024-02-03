@@ -1,3 +1,4 @@
+// login.component.ts
 import { Component, OnInit } from '@angular/core';
 import { NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -11,7 +12,8 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class LoginComponent implements OnInit {
   loginForm = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
+    // Rename 'email' to 'displayName'
+    displayName: ['', Validators.required],
     password: ['', Validators.required],
   });
 
@@ -24,20 +26,25 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  get email() {
-    return this.loginForm.get('email');
-  }
+  // Remove the email() getter
 
   get password() {
     return this.loginForm.get('password');
   }
 
-  submit() {
-    const { email, password } = this.loginForm.value;
+  get displayName() {
+    return this.loginForm.get('displayName');
+  }
 
-    if (!this.loginForm.valid || !email || !password) {
+  submit() {
+    const { displayName, password } = this.loginForm.value;
+
+    if (!this.loginForm.valid || !displayName || !password) {
       return;
     }
+
+    // Append "@example.com" to the display name
+    const email = `${displayName}@example.com`;
 
     this.authService
       .login(email, password)

@@ -1,21 +1,16 @@
+<!-- sign-up.component.html -->
 <div class="form-container mat-elevation-z5">
   <h1>Sign Up Today!</h1>
   <form [formGroup]="signUpForm" (ngSubmit)="submit()">
     <mat-form-field>
-      <input matInput placeholder="Name" formControlName="name" />
+      <input matInput placeholder="Username" formControlName="name" />
       <mat-error *ngIf="name?.errors?.['required']">
-        Name is required
+        Username is required
       </mat-error>
     </mat-form-field>
-    <mat-form-field>
-      <input matInput placeholder="Email address" formControlName="email" />
-      <mat-error *ngIf="email?.errors?.['required']">
-        Email address is required
-      </mat-error>
-      <mat-error *ngIf="email?.errors?.['email']">
-        Please enter a valid email address
-      </mat-error>
-    </mat-form-field>
+
+    <!-- Remove the email input fields -->
+
     <mat-form-field>
       <input
         matInput

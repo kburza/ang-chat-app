@@ -1,14 +1,10 @@
+<!-- login.component.html -->
 <div class="form-container mat-elevation-z5">
   <h1>Login</h1>
   <form [formGroup]="loginForm" (ngSubmit)="submit()">
     <mat-form-field>
-      <input matInput placeholder="Email address" formControlName="email" />
-      <mat-error *ngIf="email?.errors?.['required']">
-        Email address is required
-      </mat-error>
-      <mat-error *ngIf="email?.errors?.['email']">
-        Please enter a valid email address
-      </mat-error>
+      <input matInput placeholder="Username" formControlName="displayName" />
+      <!-- Remove the error for email format -->
     </mat-form-field>
     <mat-form-field>
       <input
