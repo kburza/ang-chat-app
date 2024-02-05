@@ -37,7 +37,6 @@ export class SignUpComponent implements OnInit {
   signUpForm = this.fb.group(
     {
       name: ['', Validators.required],
-      // Remove the email field
       password: ['', Validators.required],
       confirmPassword: ['', Validators.required],
     },
@@ -53,8 +52,6 @@ export class SignUpComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {}
-
-  // Remove the email() getter
 
   get password() {
     return this.signUpForm.get('password');
@@ -87,7 +84,7 @@ export class SignUpComponent implements OnInit {
             uid,
             email,
             displayName: name,
-            color: defaultColor, // Set the default color here
+            color: defaultColor,
           })
         ),
         this.toast.observe({
@@ -97,7 +94,13 @@ export class SignUpComponent implements OnInit {
         })
       )
       .subscribe(() => {
-        this.router.navigate(['/home']);
+        this.navigateToHome();
       });
+  }
+
+  navigateToHome() {
+    const isMobile = window.innerWidth <= 700;
+    const route = isMobile ? '/chats' : '/home';
+    this.router.navigate([route]);
   }
 }

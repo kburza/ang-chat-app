@@ -12,7 +12,6 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class LoginComponent implements OnInit {
   loginForm = this.fb.group({
-    // Rename 'email' to 'displayName'
     displayName: ['', Validators.required],
     password: ['', Validators.required],
   });
@@ -25,8 +24,6 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {}
-
-  // Remove the email() getter
 
   get password() {
     return this.loginForm.get('password');
@@ -43,7 +40,6 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    // Append "@example.com" to the display name
     const email = `${displayName}@example.com`;
 
     this.authService
@@ -56,7 +52,15 @@ export class LoginComponent implements OnInit {
         })
       )
       .subscribe(() => {
-        this.router.navigate(['/home']);
+        // Use the navigateToHome method from AppComponent
+        this.navigateToHome();
       });
+  }
+
+  // Add this method to navigate to either /home or /chats based on window width
+  navigateToHome() {
+    const isMobile = window.innerWidth <= 700;
+    const route = isMobile ? '/chats' : '/home';
+    this.router.navigate([route]);
   }
 }

@@ -26,4 +26,10 @@ export class AppComponent {
       });
     });
   }
+
+  navigateToHome() {
+    const isMobile = window.innerWidth <= 700;
+    const route = isMobile ? '/chats' : '/home';
+    this.router.navigate([route]);
+  }
 }

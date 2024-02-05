@@ -22,6 +22,8 @@ import { UsersService } from 'src/app/services/users.service';
 import { Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -66,6 +68,9 @@ export class HomeComponent implements OnInit {
     this.myChats$,
   ]).pipe(map(([value, chats]) => chats.find((c) => c.id === value?.[0])));
 
+  private destroy$ = new Subject<void>();
+  allowRedirect: boolean = true;
+
   constructor(
     private usersService: UsersService,
     private chatsService: ChatsService,
@@ -74,6 +79,7 @@ export class HomeComponent implements OnInit {
   ) {}
 
   initialScreenWidth: number = window.innerWidth;
+  currentRoute: string = '';
 
   ngOnInit(): void {
     this.initialScreenWidth = window.innerWidth;
@@ -89,16 +95,34 @@ export class HomeComponent implements OnInit {
     );
 
     // Add listener for window resize
-    window.addEventListener('resize', this.handleWindowResize.bind(this));
+    this.breakpointObserver
+      .observe([Breakpoints.Handset])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((result) => {
+        if (result.matches) {
+          // It's a mobile screen
+          this.handleMobileScreen();
+        } else {
+          // It's not a mobile screen
+          this.allowRedirect = false;
+        }
+      });
   }
 
-  handleWindowResize() {
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  handleMobileScreen() {
     const currentRoute = this.router.url;
 
-    if (this.isMobileScreen() && currentRoute === '/home') {
-      // If the screen width is mobile and the current route is /home,
-      // navigate to /chats
+    if (currentRoute === '/home' && !this.allowRedirect) {
+      this.allowRedirect = true; // Enable redirection
       this.router.navigate(['/chats']);
+    } else if (currentRoute === '/chats' && !this.allowRedirect) {
+      this.allowRedirect = true; // Enable redirection
+      this.router.navigate(['/home']);
     }
   }
 
@@ -153,8 +177,4 @@ export class HomeComponent implements OnInit {
   isMobileScreen(): boolean {
     return this.initialScreenWidth <= 700;
   }
-}
-
-function subscribe(arg0: (chatId: any) => void) {
-  throw new Error('Function not implemented.');
 }

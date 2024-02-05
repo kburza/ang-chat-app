@@ -4,7 +4,7 @@
     <ng-container
       *ngIf="selectedChat$ | async as selectedChat; else noChatSelected"
     >
-      <div class="messages-header">
+      <div class="messages mat-elevation-z5" *ngIf="showMessages">
         <mat-icon style="padding-right: 3px; padding-top: 2px">face</mat-icon>
         <h2>{{ selectedChat.chatName }}</h2>
       </div>

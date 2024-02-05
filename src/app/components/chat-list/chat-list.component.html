@@ -28,8 +28,12 @@
     <mat-selection-list [multiple]="false" [formControl]="chatListControl">
       <mat-divider></mat-divider>
 
-      <mat-list-option *ngFor="let chat of myChats$ | async" [value]="chat.id">
-        <div class="chat-title">
+      <mat-list-option
+        *ngFor="let chat of myChats$ | async"
+        [value]="chat.id"
+        (click)="navigateToMessages(chat.id)"
+      >
+        <div class="chat-title" (click)="navigateToMessages(chat.id)">
           <lucide-icon
             name="ghost"
             size="17"

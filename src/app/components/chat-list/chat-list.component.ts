@@ -4,6 +4,7 @@ import {
   OnInit,
   ViewChild,
   OnDestroy,
+  Injectable,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import {
@@ -19,7 +20,7 @@ import { Message } from 'src/app/models/chat';
 import { ProfileUser } from 'src/app/models/user';
 import { ChatsService } from 'src/app/services/chats.service';
 import { UsersService } from 'src/app/services/users.service';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
@@ -77,6 +78,29 @@ export class ChatListComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    // Retrieve the chatId from the route parameters
+    this.router.events.pipe(takeUntil(this.unsubscribe$)).subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        const chatId = event.url.split('/').pop();
+        if (chatId) {
+          // Create chat if not existing
+          this.chatsService
+            .isExistingChat(chatId)
+            .pipe(
+              switchMap((existingChatId) =>
+                existingChatId
+                  ? of(existingChatId)
+                  : this.chatsService.createChat(chatId)
+              ),
+              takeUntil(this.unsubscribe$)
+            )
+            .subscribe((createdChatId) => {
+              this.chatListControl.setValue([createdChatId]);
+            });
+        }
+      }
+    });
+
     this.messages$ = this.chatListControl.valueChanges.pipe(
       map((value) => value?.[0]),
       switchMap((chatId) =>
@@ -85,7 +109,7 @@ export class ChatListComponent implements OnInit, OnDestroy {
       tap(() => {
         this.scrollToBottom();
       }),
-      takeUntil(this.unsubscribe$) // Unsubscribe when component is destroyed
+      takeUntil(this.unsubscribe$)
     );
 
     // Add listener for window resize
@@ -97,8 +121,6 @@ export class ChatListComponent implements OnInit, OnDestroy {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
-
-  showMessages: boolean = false;
 
   createChat(user: ProfileUser) {
     console.log('Creating chat for user:', user);
@@ -112,16 +134,16 @@ export class ChatListComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe((chatId) => {
-        const chatRoute = '/messages';
+        const chatRoute = '/messages/' + chatId;
         console.log('Navigating to route:', chatRoute);
 
-        // Navigate to the '/messages' route with the chatId as a parameter
-        this.router.navigate([chatRoute, chatId]);
+        // Navigate to the '/messages/:chatId' route
+        this.router.navigate([chatRoute]);
       });
   }
 
   toggleMessages() {
-    this.showMessages = !this.showMessages;
+    // Toggle logic if needed
   }
 
   sendMessage() {
@@ -158,5 +180,10 @@ export class ChatListComponent implements OnInit, OnDestroy {
       // navigate back to /home
       this.router.navigate(['/home']);
     }
+  }
+
+  navigateToMessages(chatId: string) {
+    const chatRoute = `/messages/${chatId}`;
+    this.router.navigate([chatRoute]);
   }
 }

@@ -112,8 +112,25 @@ export class MessageWindowComponent implements OnInit {
         )
       )
       .subscribe((chatId) => {
-        this.chatListControl.setValue([chatId[0] || ''] as string[]);
-        this.showMessages = true; // Show messages when chat is created
+        console.log('ChatId being passed:', chatId);
+
+        // Check if the user is on the home page before navigating to chats
+        if (this.router.url === '/') {
+          // Take the chatId from the URL if it's routed from /chats
+          const routeChatId = this.router.url.includes('/chats/')
+            ? this.router.url.split('/chats/')[1]
+            : null;
+
+          // Determine the chat route based on the context
+          const chatRoute = routeChatId
+            ? `/messages/${routeChatId}`
+            : this.isMobileScreen()
+            ? `/messages/${chatId[0]}`
+            : '/chats';
+
+          // Navigate to the determined route
+          this.router.navigate([chatRoute]);
+        }
       });
   }
 

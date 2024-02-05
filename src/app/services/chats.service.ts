@@ -5,17 +5,17 @@ import {
   collectionData,
   doc,
   Firestore,
-  getDoc,
   orderBy,
   query,
   Timestamp,
   updateDoc,
   where,
 } from '@angular/fire/firestore';
-import { concatMap, from, map, Observable, take, tap } from 'rxjs';
+import { concatMap, map, Observable, switchMap, take } from 'rxjs';
 import { Chat, Message } from '../models/chat';
 import { ProfileUser } from '../models/user';
 import { UsersService } from './users.service';
+import { from, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -41,22 +41,48 @@ export class ChatsService {
     );
   }
 
-  createChat(otherUser: ProfileUser): Observable<string> {
+  createChat(otherUserOrChatId: ProfileUser | string): Observable<string> {
+    const ref = collection(this.firestore, 'chats');
+    return this.usersService.currentUserProfile$.pipe(
+      take(1),
+      switchMap((user) => {
+        if (typeof otherUserOrChatId === 'string') {
+          // Handle the case where a chatId is provided
+          return of(otherUserOrChatId);
+        } else {
+          // Handle the case where a ProfileUser object is provided
+          return from(
+            addDoc(ref, {
+              userIds: [user?.uid, otherUserOrChatId?.uid],
+              users: [
+                {
+                  displayName: user?.displayName ?? '',
+                  //   photoURL: user?.photoURL ?? '',
+                },
+                {
+                  displayName: otherUserOrChatId.displayName ?? '',
+                  //   photoURL: otherUserOrChatId.photoURL ?? '',
+                },
+              ],
+            })
+          ).pipe(map((ref) => ref.id));
+        }
+      })
+    );
+  }
+
+  createChatWithId(chatId: string): Observable<string> {
     const ref = collection(this.firestore, 'chats');
     return this.usersService.currentUserProfile$.pipe(
       take(1),
       concatMap((user) =>
         addDoc(ref, {
-          userIds: [user?.uid, otherUser?.uid],
+          userIds: [user?.uid, chatId], // Use the provided chatId
           users: [
             {
               displayName: user?.displayName ?? '',
-              //   photoURL: user?.photoURL ?? '',
             },
-            {
-              displayName: otherUser.displayName ?? '',
-              //   photoURL: otherUser.photoURL ?? '',
-            },
+            // ... rest of your code
           ],
         })
       ),

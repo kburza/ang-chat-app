@@ -27,7 +27,7 @@
 </div>
 
 <mat-menu #userMenu="matMenu">
-  <button mat-menu-item routerLink="/home">
+  <button mat-menu-item (click)="navigateToHome()">
     <mat-icon>home</mat-icon>
     Home
   </button>
