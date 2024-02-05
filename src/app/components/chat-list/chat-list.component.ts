@@ -3,7 +3,7 @@ import {
   ElementRef,
   OnInit,
   ViewChild,
-  HostListener,
+  OnDestroy,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import {
@@ -20,15 +20,16 @@ import { ProfileUser } from 'src/app/models/user';
 import { ChatsService } from 'src/app/services/chats.service';
 import { UsersService } from 'src/app/services/users.service';
 import { Router } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css'],
+  selector: 'app-chat-list',
+  templateUrl: './chat-list.component.html',
+  styleUrls: ['./chat-list.component.css'],
 })
-export class HomeComponent implements OnInit {
+export class ChatListComponent implements OnInit, OnDestroy {
   @ViewChild('endOfChat')
   endOfChat!: ElementRef;
 
@@ -66,6 +67,8 @@ export class HomeComponent implements OnInit {
     this.myChats$,
   ]).pipe(map(([value, chats]) => chats.find((c) => c.id === value?.[0])));
 
+  private unsubscribe$: Subject<void> = new Subject<void>();
+
   constructor(
     private usersService: UsersService,
     private chatsService: ChatsService,
@@ -73,11 +76,7 @@ export class HomeComponent implements OnInit {
     private breakpointObserver: BreakpointObserver
   ) {}
 
-  initialScreenWidth: number = window.innerWidth;
-
   ngOnInit(): void {
-    this.initialScreenWidth = window.innerWidth;
-
     this.messages$ = this.chatListControl.valueChanges.pipe(
       map((value) => value?.[0]),
       switchMap((chatId) =>
@@ -85,43 +84,39 @@ export class HomeComponent implements OnInit {
       ),
       tap(() => {
         this.scrollToBottom();
-      })
+      }),
+      takeUntil(this.unsubscribe$) // Unsubscribe when component is destroyed
     );
 
     // Add listener for window resize
     window.addEventListener('resize', this.handleWindowResize.bind(this));
   }
 
-  handleWindowResize() {
-    const currentRoute = this.router.url;
-
-    if (this.isMobileScreen() && currentRoute === '/home') {
-      // If the screen width is mobile and the current route is /home,
-      // navigate to /chats
-      this.router.navigate(['/chats']);
-    }
+  ngOnDestroy(): void {
+    window.removeEventListener('resize', this.handleWindowResize);
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
   showMessages: boolean = false;
 
   createChat(user: ProfileUser) {
+    console.log('Creating chat for user:', user);
+
     this.chatsService
       .isExistingChat(user.uid)
       .pipe(
         switchMap((chatId) =>
           !chatId ? this.chatsService.createChat(user) : of(chatId)
-        )
+        ),
+        takeUntil(this.unsubscribe$)
       )
       .subscribe((chatId) => {
-        console.log('ChatId being passed:', chatId);
+        const chatRoute = '/messages';
+        console.log('Navigating to route:', chatRoute);
 
-        // Check if the user is on the home page before navigating to chats
-        if (this.router.url === '/') {
-          const chatRoute = this.isMobileScreen()
-            ? `/messages/${chatId[0]}`
-            : '/chats';
-          this.router.navigate([chatRoute]);
-        }
+        // Navigate to the '/messages' route with the chatId as a parameter
+        this.router.navigate([chatRoute, chatId]);
       });
   }
 
@@ -150,11 +145,18 @@ export class HomeComponent implements OnInit {
     }, 100);
   }
 
+  // Add this method to check if the screen is mobile
   isMobileScreen(): boolean {
-    return this.initialScreenWidth <= 700;
+    return window.innerWidth <= 700;
   }
-}
 
-function subscribe(arg0: (chatId: any) => void) {
-  throw new Error('Function not implemented.');
+  handleWindowResize() {
+    const currentRoute = this.router.url;
+
+    if (!this.isMobileScreen() && currentRoute.includes('/chats')) {
+      // If the screen width goes above 700px and the current route is /chats,
+      // navigate back to /home
+      this.router.navigate(['/home']);
+    }
+  }
 }

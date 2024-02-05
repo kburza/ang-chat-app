@@ -6,6 +6,7 @@ import { switchMap, tap } from 'rxjs';
 import { ProfileUser } from 'src/app/models/user';
 import { ImageUploadService } from 'src/app/services/image-upload.service';
 import { UsersService } from 'src/app/services/users.service';
+import { Router, NavigationEnd } from '@angular/router';
 
 @UntilDestroy()
 @Component({
@@ -40,7 +41,8 @@ export class ProfileComponent implements OnInit {
     private imageUploadService: ImageUploadService,
     private toast: HotToastService,
     private usersService: UsersService,
-    private fb: NonNullableFormBuilder
+    private fb: NonNullableFormBuilder,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -49,6 +51,17 @@ export class ProfileComponent implements OnInit {
       .subscribe((user) => {
         this.profileForm.patchValue({ ...user });
       });
+
+    this.router.events.pipe(untilDestroyed(this)).subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        // Check the current route and handle window resize accordingly
+        if (event.url.includes('/profile')) {
+          window.addEventListener('resize', this.handleWindowResize.bind(this));
+        } else {
+          window.removeEventListener('resize', this.handleWindowResize);
+        }
+      }
+    });
   }
 
   uploadFile(event: any, { uid }: ProfileUser) {
@@ -71,8 +84,8 @@ export class ProfileComponent implements OnInit {
   }
 
   setColor(color: string) {
-    this.profileForm.patchValue({ color }); // Set color in the profileForm
-    this.saveProfile(); // Trigger saveProfile function
+    this.profileForm.patchValue({ color });
+    this.saveProfile();
   }
 
   saveProfile() {
@@ -94,7 +107,6 @@ export class ProfileComponent implements OnInit {
       .subscribe();
   }
 
-  // Methods for hover effect on mat-icon
   onMouseEnter() {
     const matIcon = document.querySelector('.larger-icon');
     if (matIcon) {
@@ -107,5 +119,15 @@ export class ProfileComponent implements OnInit {
     if (matIcon) {
       matIcon.classList.remove('hovered');
     }
+  }
+
+  handleWindowResize() {
+    if (this.isMobileScreen() && this.router.url.includes('/profile')) {
+      console.log('Handling window resize for profile route');
+    }
+  }
+
+  isMobileScreen(): boolean {
+    return window.innerWidth <= 700;
   }
 }

@@ -1,0 +1,48 @@
+<!-- chat-list.component.html -->
+<div class="container">
+  <div
+    class="chat-list mat-elevation-z5"
+    [ngStyle]="{ 'background-color': (currentUser$ | async)?.color }"
+  >
+    <div class="search-input">
+      <mat-form-field>
+        <input
+          matInput
+          placeholder="Search for users..."
+          [matAutocomplete]="users"
+          [formControl]="searchControl"
+          style="color: white"
+        />
+      </mat-form-field>
+      <mat-autocomplete #users="matAutocomplete">
+        <mat-option
+          *ngFor="let user of users$ | async"
+          [value]="''"
+          (click)="createChat(user)"
+        >
+          {{ user.displayName }}
+        </mat-option>
+      </mat-autocomplete>
+    </div>
+
+    <mat-selection-list [multiple]="false" [formControl]="chatListControl">
+      <mat-divider></mat-divider>
+
+      <mat-list-option *ngFor="let chat of myChats$ | async" [value]="chat.id">
+        <div class="chat-title">
+          <lucide-icon
+            name="ghost"
+            size="17"
+            style="padding-top: 1px; margin-right: px"
+          ></lucide-icon>
+          <span class="chat-name">{{ chat.chatName }}</span>
+          <span class="chat-date" style="font-size: 0.5rem">{{
+            chat.lastMessageDate | dateDisplay
+          }}</span>
+        </div>
+        <p mat-line style="font-size: 0.7rem">{{ chat.lastMessage }}</p>
+        <mat-divider></mat-divider>
+      </mat-list-option>
+    </mat-selection-list>
+  </div>
+</div>

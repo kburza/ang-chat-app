@@ -10,6 +10,8 @@ import {
   redirectUnauthorizedTo,
 } from '@angular/fire/auth-guard';
 import { ProfileComponent } from './components/profile/profile.component';
+import { ChatListComponent } from './components/chat-list/chat-list.component';
+import { MessageWindowComponent } from './components/messages/messages.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 const redirectLoggedInToHome = () => redirectLoggedInTo(['home']);
@@ -36,6 +38,8 @@ const routes: Routes = [
     path: 'profile',
     component: ProfileComponent,
   },
+  { path: 'chats', component: ChatListComponent },
+  { path: 'messages/:chatId', component: MessageWindowComponent },
 ];
 
 @NgModule({

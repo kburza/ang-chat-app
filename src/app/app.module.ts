@@ -34,6 +34,8 @@ import { DateDisplayPipe } from 'src/app/components/pipes/date-display.pipe';
 import { TimeAgoPipe } from 'time-ago-pipe';
 import { DatePipe } from '@angular/common';
 import { MatDividerModule } from '@angular/material/divider';
+import { ChatListComponent } from './components/chat-list/chat-list.component';
+import { MessageWindowComponent } from './components/messages/messages.component';
 
 @Pipe({
   name: 'timeAgo',
@@ -51,6 +53,8 @@ export class TimeAgoExtendsPipe extends TimeAgoPipe {}
     ProfileComponent,
     DateDisplayPipe,
     TimeAgoExtendsPipe,
+    ChatListComponent,
+    MessageWindowComponent,
   ],
   imports: [
     BrowserModule,
