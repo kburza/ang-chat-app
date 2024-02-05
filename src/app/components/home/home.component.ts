@@ -24,12 +24,12 @@ export class HomeComponent implements OnInit {
   endOfChat!: ElementRef;
 
   user$ = this.usersService.currentUserProfile$;
-  currentUser$ = this.user$ as Observable<ProfileUser>; // Add this line
+  currentUser$ = this.user$ as Observable<ProfileUser>;
   myChats$ = this.chatsService.myChats$;
 
   searchControl = new FormControl('');
   messageControl = new FormControl('');
-  chatListControl = new FormControl('');
+  chatListControl = new FormControl<string[]>(['']);
 
   messages$: Observable<Message[]> | undefined;
 
@@ -74,6 +74,8 @@ export class HomeComponent implements OnInit {
     );
   }
 
+  showMessages: boolean = false;
+
   createChat(user: ProfileUser) {
     this.chatsService
       .isExistingChat(user.uid)
@@ -83,8 +85,13 @@ export class HomeComponent implements OnInit {
         )
       )
       .subscribe((chatId) => {
-        this.chatListControl.setValue(chatId[0] || '');
+        this.chatListControl.setValue([chatId[0] || ''] as string[]);
+        this.showMessages = true; // Show messages when chat is created
       });
+  }
+
+  toggleMessages() {
+    this.showMessages = !this.showMessages;
   }
 
   sendMessage() {
@@ -108,21 +115,8 @@ export class HomeComponent implements OnInit {
     }, 100);
   }
 
-  hexToRgb(hex: string): string | undefined {
-    if (!hex) {
-      return undefined;
-    }
-
-    // Expand shorthand form (e.g., "03F") to full form (e.g., "0033FF")
-    const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(
-      hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b)
-    );
-    return result
-      ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(
-          result[3],
-          16
-        )}`
-      : '';
+  // Add this method to check if the screen is mobile
+  isMobileScreen(): boolean {
+    return window.innerWidth <= 700;
   }
 }
