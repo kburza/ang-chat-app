@@ -1,3 +1,4 @@
+// messages.component.ts
 import {
   Component,
   ElementRef,
@@ -6,23 +7,14 @@ import {
   HostListener,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import {
-  combineLatest,
-  map,
-  Observable,
-  of,
-  startWith,
-  switchMap,
-  tap,
-} from 'rxjs';
+import { combineLatest, map, Observable, of, switchMap, tap } from 'rxjs';
 import { Message } from 'src/app/models/chat';
 import { ProfileUser } from 'src/app/models/user';
 import { ChatsService } from 'src/app/services/chats.service';
 import { UsersService } from 'src/app/services/users.service';
-import { Router } from '@angular/router';
-import { takeUntil } from 'rxjs/operators';
+import { Router, ActivatedRoute } from '@angular/router';
+import { startWith, take, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-messages',
@@ -80,8 +72,7 @@ export class MessageWindowComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       const chatId = params['chatId'];
-      console.log('Received chatId:', chatId);
-      // Now you have the chatId, you can load the chat messages or perform other actions
+      this.loadOrCreateChat(chatId);
     });
 
     this.messages$ = this.chatListControl.valueChanges.pipe(
@@ -95,7 +86,7 @@ export class MessageWindowComponent implements OnInit {
       takeUntil(this.unsubscribe$)
     );
 
-    this.handleWindowResize(); // Call the method to check the screen width initially
+    this.handleWindowResize();
   }
 
   ngOnDestroy(): void {
@@ -112,23 +103,15 @@ export class MessageWindowComponent implements OnInit {
         )
       )
       .subscribe((chatId) => {
-        console.log('ChatId being passed:', chatId);
-
-        // Check if the user is on the home page before navigating to chats
         if (this.router.url === '/') {
-          // Take the chatId from the URL if it's routed from /chats
           const routeChatId = this.router.url.includes('/chats/')
             ? this.router.url.split('/chats/')[1]
             : null;
-
-          // Determine the chat route based on the context
           const chatRoute = routeChatId
             ? `/messages/${routeChatId}`
             : this.isMobileScreen()
             ? `/messages/${chatId[0]}`
             : '/chats';
-
-          // Navigate to the determined route
           this.router.navigate([chatRoute]);
         }
       });
@@ -159,17 +142,37 @@ export class MessageWindowComponent implements OnInit {
     }, 100);
   }
 
-  // Add this method to check if the screen is mobile
   isMobileScreen(): boolean {
     return window.innerWidth <= 700;
   }
 
-  // Handle window resize
   @HostListener('window:resize', ['$event'])
   handleWindowResize(event?: Event) {
     if (!this.isMobileScreen()) {
-      // If the screen width goes above 700px, navigate back to home
       this.router.navigate(['/home']);
+    }
+  }
+
+  loadOrCreateChat(chatId: string) {
+    if (chatId) {
+      this.chatsService.getChatMessages$(chatId).subscribe((messages) => {
+        this.chatListControl.setValue([chatId]);
+        // Additional logic if needed to handle loaded messages
+      });
+    } else {
+      // If chatId is not provided, create a new chat
+      const user$ = this.usersService.currentUserProfile$;
+      user$.pipe(take(1)).subscribe((user) => {
+        if (user) {
+          // Check if user is not null
+          this.chatsService.createChat(user).subscribe((newChatId) => {
+            this.chatListControl.setValue([newChatId]);
+            // Additional logic if needed after creating the new chat
+          });
+        } else {
+          console.error('User is null. Cannot create a chat.'); // Handle the case where user is null
+        }
+      });
     }
   }
 }

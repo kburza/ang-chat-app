@@ -1,57 +1,56 @@
 <!-- messages.component.html -->
 <div class="container">
   <div class="messages mat-elevation-z5">
-    <ng-container
+    <div
+      class="messages-header"
       *ngIf="selectedChat$ | async as selectedChat; else noChatSelected"
     >
-      <div class="messages mat-elevation-z5" *ngIf="showMessages">
-        <mat-icon style="padding-right: 3px; padding-top: 2px">face</mat-icon>
-        <h2>{{ selectedChat.chatName }}</h2>
-      </div>
-      <mat-divider></mat-divider>
-      <div class="chat-area">
-        <ng-container *ngIf="user$ | async as currentUser">
-          <ng-container *ngIf="messages$ | async as messages">
+      <mat-icon style="padding-right: 3px; padding-top: 2px">face</mat-icon>
+      <h2>{{ selectedChat.chatName }}</h2>
+    </div>
+    <ng-template #noChatSelected>
+      <h2>Chats</h2>
+    </ng-template>
+    <mat-divider></mat-divider>
+    <div class="chat-area">
+      <ng-container *ngIf="user$ | async as currentUser">
+        <ng-container *ngIf="messages$ | async as messages">
+          <div
+            class="chat-bubble-container"
+            [ngClass]="{ sender: message.senderId === currentUser.uid }"
+            *ngFor="let message of messages"
+          >
             <div
-              class="chat-bubble-container"
-              [ngClass]="{ sender: message.senderId === currentUser.uid }"
-              *ngFor="let message of messages"
+              class="chat-bubble"
+              [ngStyle]="{
+                'background-color':
+                  message.senderId === (currentUser$ | async)?.uid
+                    ? (currentUser$ | async)?.color
+                    : 'white',
+                color:
+                  message.senderId === (currentUser$ | async)?.uid
+                    ? 'white'
+                    : 'black'
+              }"
             >
-              <div
-                class="chat-bubble"
+              {{ message.text }}
+              <span
+                class="chat-time"
                 [ngStyle]="{
-                  'background-color':
-                    message.senderId === (currentUser$ | async)?.uid
-                      ? (currentUser$ | async)?.color
-                      : 'white',
                   color:
                     message.senderId === (currentUser$ | async)?.uid
                       ? 'white'
                       : 'black'
                 }"
               >
-                {{ message.text }}
-                <span
-                  class="chat-time"
-                  [ngStyle]="{
-                    color:
-                      message.senderId === (currentUser$ | async)?.uid
-                        ? 'white'
-                        : 'black'
-                  }"
-                >
-                  {{ message.sentDate | dateDisplay }}
-                </span>
-              </div>
+                {{ message.sentDate | dateDisplay }}
+              </span>
             </div>
-          </ng-container>
+          </div>
         </ng-container>
-        <div #endOfChat></div>
-      </div>
-    </ng-container>
-    <ng-template #noChatSelected>
-      <h2>Chats</h2>
-    </ng-template>
+      </ng-container>
+      <div #endOfChat></div>
+    </div>
     <div class="input-area">
       <mat-form-field appearance="outline">
         <input
