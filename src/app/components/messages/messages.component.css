@@ -80,3 +80,7 @@
     }
   }
 }
+
+.back-arrow {
+  cursor: pointer; /* Set cursor to pointer on hover */
+}

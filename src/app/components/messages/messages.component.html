@@ -5,6 +5,9 @@
       class="messages-header"
       *ngIf="selectedChat$ | async as selectedChat; else noChatSelected"
     >
+      <div class="back-arrow" routerLink="/chats">
+        <mat-icon>keyboard_arrow_left</mat-icon>
+      </div>
       <mat-icon style="padding-right: 3px; padding-top: 2px">face</mat-icon>
       <h2>{{ selectedChat.chatName }}</h2>
     </div>
