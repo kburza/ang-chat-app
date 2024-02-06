@@ -40,14 +40,16 @@
             style="margin-top: 10px; margin-right: 5px"
           ></lucide-icon>
           <span class="chat-name">{{ chat.chatName }}</span>
-          <span
+          <!-- <span
             class="chat-date"
             style="margin-left: auto; font-size: 0.5rem; text-align: right"
           >
             {{ chat.lastMessageDate | dateDisplay }}
-          </span>
+          </span> -->
         </div>
-        <p mat-line style="font-size: 0.7rem">{{ chat.lastMessage }}</p>
+        <!-- <p mat-line style="font-size: 0.7rem; overflow: hidden">
+          {{ chat.lastMessage }}
+        </p> -->
         <mat-divider></mat-divider>
       </mat-list-option>
     </mat-selection-list>
