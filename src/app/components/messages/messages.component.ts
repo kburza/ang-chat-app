@@ -1,4 +1,3 @@
-// messages.component.ts
 import {
   Component,
   ElementRef,
@@ -14,7 +13,7 @@ import { ChatsService } from 'src/app/services/chats.service';
 import { UsersService } from 'src/app/services/users.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { startWith, take, takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-messages',
@@ -61,6 +60,7 @@ export class MessageWindowComponent implements OnInit {
 
   private unsubscribe$: Subject<void> = new Subject<void>();
   showMessages: boolean | undefined;
+  messagesSubscription: Subscription | undefined;
 
   constructor(
     private usersService: UsersService,
@@ -75,23 +75,31 @@ export class MessageWindowComponent implements OnInit {
       this.loadOrCreateChat(chatId);
     });
 
-    this.messages$ = this.chatListControl.valueChanges.pipe(
-      map((value) => value?.[0]),
-      switchMap((chatId) =>
-        chatId ? this.chatsService.getChatMessages$(chatId) : of([])
-      ),
-      tap(() => {
-        this.scrollToBottom();
-      }),
-      takeUntil(this.unsubscribe$)
-    );
-
     this.handleWindowResize();
+
+    // Subscribe to messages$ observable
+    this.messagesSubscription = this.chatListControl.valueChanges
+      .pipe(
+        map((value) => value?.[0]),
+        switchMap((chatId) =>
+          chatId ? this.chatsService.getChatMessages$(chatId) : of([])
+        ),
+        tap(() => {
+          this.scrollToBottom();
+        })
+      )
+      .subscribe((messages) => {
+        this.messages$ = of(messages);
+      });
   }
 
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
+    // Unsubscribe from messages$ observable
+    if (this.messagesSubscription) {
+      this.messagesSubscription.unsubscribe();
+    }
   }
 
   createChat(user: ProfileUser) {

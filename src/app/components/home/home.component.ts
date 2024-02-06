@@ -1,29 +1,16 @@
-import {
-  Component,
-  ElementRef,
-  OnInit,
-  ViewChild,
-  HostListener,
-} from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import {
-  combineLatest,
-  map,
-  Observable,
-  of,
-  startWith,
-  switchMap,
-  tap,
-} from 'rxjs';
+import { combineLatest, map, Observable, of, switchMap, tap } from 'rxjs';
 import { Message } from 'src/app/models/chat';
 import { ProfileUser } from 'src/app/models/user';
 import { ChatsService } from 'src/app/services/chats.service';
 import { UsersService } from 'src/app/services/users.service';
 import { Router } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { filter, startWith } from 'rxjs/operators';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -79,7 +66,6 @@ export class HomeComponent implements OnInit {
   ) {}
 
   initialScreenWidth: number = window.innerWidth;
-  currentRoute: string = '';
 
   ngOnInit(): void {
     this.initialScreenWidth = window.innerWidth;
@@ -94,17 +80,26 @@ export class HomeComponent implements OnInit {
       })
     );
 
-    // Add listener for window resize
+    // Add listener for window resize with debounce
     this.breakpointObserver
       .observe([Breakpoints.Handset])
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        debounceTime(500), // Adjust the debounce time as needed
+        takeUntil(this.destroy$)
+      )
       .subscribe((result) => {
         if (result.matches) {
           // It's a mobile screen
-          this.handleMobileScreen();
+          if (this.router.url === '/home') {
+            // Only redirect if on the home route
+            this.router.navigate(['/chats']);
+          }
         } else {
           // It's not a mobile screen
-          this.allowRedirect = false;
+          if (this.router.url === '/chats') {
+            // Only redirect if on the chats route
+            this.router.navigate(['/home']);
+          }
         }
       });
   }

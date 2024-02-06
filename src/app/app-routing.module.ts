@@ -12,6 +12,7 @@ import {
 import { ProfileComponent } from './components/profile/profile.component';
 import { ChatListComponent } from './components/chat-list/chat-list.component';
 import { MessageWindowComponent } from './components/messages/messages.component';
+import { PassResetComponent } from './components/pass-reset/pass-reset.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 const redirectLoggedInToHome = () => redirectLoggedInTo(['home']);
@@ -40,6 +41,7 @@ const routes: Routes = [
   },
   { path: 'chats', component: ChatListComponent },
   { path: 'messages/:chatId', component: MessageWindowComponent },
+  { path: 'passreset', component: PassResetComponent },
 ];
 
 @NgModule({

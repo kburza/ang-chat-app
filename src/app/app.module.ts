@@ -36,6 +36,7 @@ import { DatePipe } from '@angular/common';
 import { MatDividerModule } from '@angular/material/divider';
 import { ChatListComponent } from './components/chat-list/chat-list.component';
 import { MessageWindowComponent } from './components/messages/messages.component';
+import { PassResetComponent } from './components/pass-reset/pass-reset.component';
 
 @Pipe({
   name: 'timeAgo',
@@ -55,6 +56,7 @@ export class TimeAgoExtendsPipe extends TimeAgoPipe {}
     TimeAgoExtendsPipe,
     ChatListComponent,
     MessageWindowComponent,
+    PassResetComponent,
   ],
   imports: [
     BrowserModule,

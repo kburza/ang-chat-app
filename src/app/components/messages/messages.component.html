@@ -6,7 +6,9 @@
       *ngIf="selectedChat$ | async as selectedChat; else noChatSelected"
     >
       <div class="back-arrow" routerLink="/chats">
-        <mat-icon>keyboard_arrow_left</mat-icon>
+        <mat-icon style="padding-right: 6px; padding-top: 2px"
+          >keyboard_arrow_left</mat-icon
+        >
       </div>
       <mat-icon style="padding-right: 3px; padding-top: 2px">face</mat-icon>
       <h2>{{ selectedChat.chatName }}</h2>
@@ -55,7 +57,7 @@
       <div #endOfChat></div>
     </div>
     <div class="input-area">
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" style="width: 100%">
         <input
           matInput
           placeholder="Enter your message..."

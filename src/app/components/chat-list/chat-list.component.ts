@@ -36,7 +36,23 @@ export class ChatListComponent implements OnInit, OnDestroy {
 
   user$ = this.usersService.currentUserProfile$;
   currentUser$ = this.user$ as Observable<ProfileUser>;
-  myChats$ = this.chatsService.myChats$;
+
+  myChats$ = this.chatsService.myChats$.pipe(
+    map((chats) => {
+      // Filter out chats with undefined lastMessageDate
+      const validChats = chats.filter((chat) => !!chat.lastMessageDate);
+
+      // Sort the valid chats by latest date in descending order
+      return validChats.sort((a, b) => {
+        // Convert lastMessageDate strings to Date objects for comparison
+        const dateA = new Date(a.lastMessageDate!);
+        const dateB = new Date(b.lastMessageDate!);
+
+        // Compare the dates in descending order
+        return dateB.getTime() - dateA.getTime();
+      });
+    })
+  );
 
   searchControl = new FormControl('');
   messageControl = new FormControl('');

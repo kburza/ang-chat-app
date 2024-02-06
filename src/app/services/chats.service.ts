@@ -21,6 +21,9 @@ import { from, of } from 'rxjs';
   providedIn: 'root',
 })
 export class ChatsService {
+  getLatestMessages(): any {
+    throw new Error('Method not implemented.');
+  }
   constructor(
     private firestore: Firestore,
     private usersService: UsersService
