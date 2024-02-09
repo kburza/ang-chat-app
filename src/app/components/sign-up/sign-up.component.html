@@ -36,8 +36,85 @@
     <mat-error *ngIf="signUpForm.errors?.['passwordsDontMatch']">
       Passwords should match
     </mat-error>
+
+    <mat-checkbox
+      #agreementCheckbox
+      formControlName="licenseAgreement"
+      color="primary"
+      [checked]="false"
+    >
+      <span
+        [style.color]="agreementCheckbox.checked ? 'black' : 'red'"
+        style="font-size: 0.75rem"
+      >
+        I agree to the terms and conditions*
+      </span>
+    </mat-checkbox>
+
     <div class="center margin-top">
-      <button type="submit" mat-raised-button color="primary">Sign Up!</button>
+      <!-- Use licenseAgreement value property directly in the condition -->
+      <button
+        type="submit"
+        mat-raised-button
+        color="primary"
+        [disabled]="!signUpForm.valid"
+      >
+        Sign Up!
+      </button>
     </div>
   </form>
+</div>
+
+<div class="user-agreement">
+  <h2>* User Agreement:</h2>
+  <ul>
+    <li>
+      <strong>Age Requirement:</strong> You affirm that you are of legal adult
+      age, which is typically 18 years or older, or the full legal age of
+      majority as defined by the laws of your country or jurisdiction. If you
+      are not of legal adult age, you must discontinue the use of this
+      application immediately.
+    </li>
+    <li>
+      <strong>Content Responsibility:</strong> You acknowledge and agree that
+      any content, including but not limited to messages, images, videos, or any
+      other form of communication or media, shared or transmitted through this
+      application, is solely the responsibility of the user who created or
+      transmitted such content. As the operator of this application, I disclaim
+      any liability for the content shared by users.
+    </li>
+    <li>
+      <strong>Legal Compliance:</strong> You agree to comply with all applicable
+      laws and regulations while using this application, including but not
+      limited to laws governing online conduct, data protection, and
+      intellectual property rights. You acknowledge that you are solely
+      responsible for your actions and communications while using this
+      application.
+    </li>
+    <li>
+      <strong>No Endorsement:</strong> The views, opinions, and content shared
+      by users of this application do not necessarily reflect the views or
+      opinions of the application operator. Any endorsement, recommendation, or
+      promotion of content by the operator is not implied unless expressly
+      stated.
+    </li>
+    <li>
+      <strong>No Warranty:</strong> This application is provided "as is" and "as
+      available," without any warranties or representations, express or implied.
+      The operator does not warrant the accuracy, completeness, or reliability
+      of any content or information provided through this application.
+    </li>
+    <li>
+      <strong>Limitation of Liability:</strong> In no event shall the operator
+      of this application be liable for any direct, indirect, incidental,
+      special, or consequential damages arising out of or in any way connected
+      with the use or inability to use this application, even if advised of the
+      possibility of such damages.
+    </li>
+  </ul>
+  <p>
+    By continuing to use this application, you acknowledge that you have read,
+    understood, and agree to be bound by these terms and conditions. If you do
+    not agree to these terms, you must immediately cease using this application.
+  </p>
 </div>

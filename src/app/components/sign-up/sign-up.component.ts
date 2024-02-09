@@ -39,6 +39,7 @@ export class SignUpComponent implements OnInit {
       name: ['', Validators.required],
       password: ['', Validators.required],
       confirmPassword: ['', Validators.required],
+      licenseAgreement: ['', Validators.requiredTrue], // Added requiredTrue validator
     },
     { validators: passwordsMatchValidator() }
   );

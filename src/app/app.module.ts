@@ -37,6 +37,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { ChatListComponent } from './components/chat-list/chat-list.component';
 import { MessageWindowComponent } from './components/messages/messages.component';
 import { PassResetComponent } from './components/pass-reset/pass-reset.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Pipe({
   name: 'timeAgo',
@@ -65,6 +66,7 @@ export class TimeAgoExtendsPipe extends TimeAgoPipe {}
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
+    MatCheckboxModule,
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
