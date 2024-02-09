@@ -26,7 +26,6 @@
 
     <mat-selection-list [multiple]="false" [formControl]="chatListControl">
       <mat-divider></mat-divider>
-
       <mat-list-option *ngFor="let chat of myChats$ | async" [value]="chat.id">
         <div class="chat-title">
           <lucide-icon
@@ -39,7 +38,9 @@
             chat.lastMessageDate | dateDisplay
           }}</span>
         </div>
-        <p mat-line style="font-size: 0.7rem">{{ chat.lastMessage }}</p>
+        <p mat-line style="font-size: 0.7rem">
+          {{ decryptMessage(chat.lastMessage ?? "", "Chatsper9999") }}
+        </p>
         <mat-divider></mat-divider>
       </mat-list-option>
     </mat-selection-list>

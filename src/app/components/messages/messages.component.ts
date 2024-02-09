@@ -14,6 +14,7 @@ import { UsersService } from 'src/app/services/users.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { startWith, take, takeUntil } from 'rxjs/operators';
 import { Subject, Subscription } from 'rxjs';
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-messages',
@@ -86,7 +87,8 @@ export class MessageWindowComponent implements OnInit {
         ),
         tap(() => {
           this.scrollToBottom();
-        })
+        }),
+        map((messages) => this.decryptMessages(messages)) // Decrypt messages before rendering
       )
       .subscribe((messages) => {
         this.messages$ = of(messages);
@@ -133,8 +135,10 @@ export class MessageWindowComponent implements OnInit {
     const message = this.messageControl.value;
     const selectedChatId = this.chatListControl.value?.[0];
     if (message && selectedChatId) {
+      // Encrypt the message using AES
+      const encryptedMessage = this.encryptMessage(message, 'Chatsper9999');
       this.chatsService
-        .addChatMessage(selectedChatId, message)
+        .addChatMessage(selectedChatId, encryptedMessage)
         .subscribe(() => {
           this.scrollToBottom();
         });
@@ -182,5 +186,25 @@ export class MessageWindowComponent implements OnInit {
         }
       });
     }
+  }
+
+  decryptMessages(messages: Message[]): Message[] {
+    const decryptedMessages = messages.map((message) => {
+      const decryptedText = this.decryptMessage(message.text, 'Chatsper9999');
+      return { ...message, text: decryptedText };
+    });
+    return decryptedMessages;
+  }
+
+  encryptMessage(message: string, key: string): string {
+    const encrypted = CryptoJS.AES.encrypt(message, key).toString();
+    return encrypted;
+  }
+
+  decryptMessage(encryptedMessage: string, key: string): string {
+    const decrypted = CryptoJS.AES.decrypt(encryptedMessage, key).toString(
+      CryptoJS.enc.Utf8
+    );
+    return decrypted;
   }
 }

@@ -1,23 +1,34 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { combineLatest, map, Observable, of, switchMap, tap } from 'rxjs';
+import { combineLatest, Observable, of, Subject } from 'rxjs';
+import {
+  debounceTime,
+  map,
+  startWith,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs/operators';
 import { Message } from 'src/app/models/chat';
 import { ProfileUser } from 'src/app/models/user';
 import { ChatsService } from 'src/app/services/chats.service';
 import { UsersService } from 'src/app/services/users.service';
 import { Router } from '@angular/router';
-import { filter, startWith } from 'rxjs/operators';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   @ViewChild('endOfChat')
   endOfChat!: ElementRef;
 
@@ -77,7 +88,8 @@ export class HomeComponent implements OnInit {
       ),
       tap(() => {
         this.scrollToBottom();
-      })
+      }),
+      map((messages) => this.decryptMessages(messages)) // Decrypt messages before displaying
     );
 
     // Add listener for window resize with debounce
@@ -152,13 +164,35 @@ export class HomeComponent implements OnInit {
     const message = this.messageControl.value;
     const selectedChatId = this.chatListControl.value?.[0];
     if (message && selectedChatId) {
+      // Encrypt the message using AES
+      const encryptedMessage = this.encryptMessage(message, 'Chatsper9999');
       this.chatsService
-        .addChatMessage(selectedChatId, message)
+        .addChatMessage(selectedChatId, encryptedMessage)
         .subscribe(() => {
           this.scrollToBottom();
         });
       this.messageControl.setValue('');
     }
+  }
+
+  decryptMessages(messages: Message[]): Message[] {
+    const decryptedMessages = messages.map((message) => {
+      const decryptedText = this.decryptMessage(message.text, 'Chatsper9999');
+      return { ...message, text: decryptedText };
+    });
+    return decryptedMessages;
+  }
+
+  encryptMessage(message: string, key: string): string {
+    const encrypted = CryptoJS.AES.encrypt(message, key).toString();
+    return encrypted;
+  }
+
+  decryptMessage(encryptedMessage: string, key: string): string {
+    const decrypted = CryptoJS.AES.decrypt(encryptedMessage, key).toString(
+      CryptoJS.enc.Utf8
+    );
+    return decrypted;
   }
 
   scrollToBottom() {
