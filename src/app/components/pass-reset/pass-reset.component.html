@@ -1,16 +1,7 @@
+<!-- pass-reset.component.html -->
 <div class="form-container mat-elevation-z5">
-  <h1>Reset Your Password</h1>
+  <h1>Password Reset</h1>
   <form [formGroup]="resetPasswordForm" (ngSubmit)="submit()">
-    <mat-form-field>
-      <input matInput placeholder="Email" formControlName="email" />
-      <mat-error *ngIf="email?.errors?.['required']">
-        Email is required
-      </mat-error>
-      <mat-error *ngIf="email?.errors?.['email']">
-        Please enter a valid email address
-      </mat-error>
-    </mat-form-field>
-
     <mat-form-field>
       <input
         matInput
@@ -32,12 +23,19 @@
       <mat-error *ngIf="confirmNewPassword?.errors?.['required']">
         Confirm New Password is required
       </mat-error>
+      <mat-error *ngIf="resetPasswordForm.errors?.['passwordsDontMatch']">
+        Passwords should match
+      </mat-error>
     </mat-form-field>
-    <mat-error *ngIf="resetPasswordForm.errors?.['passwordsDontMatch']">
-      Passwords should match
-    </mat-error>
+
     <div class="center margin-top">
-      <button type="submit" mat-raised-button color="primary">
+      <!-- Disable the button if the form is invalid -->
+      <button
+        type="submit"
+        mat-raised-button
+        color="primary"
+        [disabled]="!resetPasswordForm.valid"
+      >
         Reset Password
       </button>
     </div>

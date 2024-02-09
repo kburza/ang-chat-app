@@ -13,6 +13,12 @@ import { from, Observable, of } from 'rxjs';
   providedIn: 'root',
 })
 export class AuthService {
+  requestPasswordReset(newPassword: any) {
+    throw new Error('Method not implemented.');
+  }
+  resetPassword(newPassword: any) {
+    throw new Error('Method not implemented.');
+  }
   addUser(profileData: any) {
     throw new Error('Method not implemented.');
   }
